@@ -4,7 +4,7 @@ ARG SERVER_PORT=3000
 ENV SERVER_PORT=${SERVER_PORT}
 EXPOSE ${SERVER_PORT}:${SERVER_PORT}
 
-RUN apt update && apt upgrade -y
+RUN apt-get update && apt-get upgrade -y && apt-get install -y python3 make g++ build-essential
 RUN useradd -m app
 COPY --chown=app ./app /graphql
 COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
@@ -19,6 +19,9 @@ RUN npm install lodash@4.17.11 marked@0.3.6 jquery@3.4.0 minimist@1.2.0 request@
 
 RUN npm install
 RUN npm run tsc
+
+# Rebuild sqlite3 bindings
+RUN npm rebuild sqlite3
 
 # Needed for sequelize to work now
 RUN npm install -g node-pre-gyp \
